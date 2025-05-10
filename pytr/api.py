@@ -38,7 +38,8 @@ import websockets
 from ecdsa import NIST256p, SigningKey  # type: ignore[import-untyped]
 from ecdsa.util import sigencode_der  # type: ignore[import-untyped]
 
-from pytr.utils import get_logger
+from .utils import get_logger
+from .typess import ISIN
 
 home = pathlib.Path.home()
 BASE_DIR = home / ".pytr"
@@ -323,7 +324,7 @@ class TradeRepublicApi:
         await ws.send(f"sub {subscription_id} {json.dumps(payload_with_token)}")
         return subscription_id
 
-    async def subscribe2(self, **kwargs):
+    async def subscribe2(self, **kwargs) -> asyncio.Queue:
         subscription_id = await self._next_subscription_id()
         ws = await self._get_ws()
         fut: asyncio.Queue = asyncio.Queue()
@@ -452,25 +453,25 @@ class TradeRepublicApi:
     async def portfolio_history(self, timeframe):
         return await self.subscribe({"type": "portfolioAggregateHistory", "range": timeframe})
 
-    def instrument_details2(self, isin):
+    def instrument_details2(self, isin: ISIN):
         return self.subscribe2(type="instrument", id=isin)
 
     def instrument_suitability2(self, isin):
         return self.subscribe2(type="instrumentSuitability", instrumentId=isin)
 
-    def stock_details2(self, isin):
+    def stock_details2(self, isin: ISIN):
         return self.subscribe2(type="stockDetails", id=isin)
 
-    async def add_watchlist(self, isin):
+    async def add_watchlist(self, isin: ISIN):
         return await self.subscribe({"type": "addToWatchlist", "instrumentId": isin})
 
-    async def remove_watchlist(self, isin):
+    async def remove_watchlist(self, isin: ISIN):
         return await self.subscribe({"type": "removeFromWatchlist", "instrumentId": isin})
 
-    async def ticker(self, isin, exchange="LSX"):
+    async def ticker2(self, isin: ISIN, exchange="LSX"):
         return await self.subscribe({"type": "ticker", "id": f"{isin}.{exchange}"})
 
-    def performance2(self, isin, exchange="LSX"):
+    def performance2(self, isin: ISIN, exchange="LSX"):
         return self.subscribe2(type="performance", id=f"{isin}.{exchange}")
 
     async def performance_history(self, isin, timeframe, exchange="LSX", resolution=None):

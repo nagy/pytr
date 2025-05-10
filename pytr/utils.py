@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import json
 import logging
 
@@ -12,7 +10,7 @@ debug_logfile_handler = None
 debug_log_filter = None
 
 
-def get_logger(name=__name__, verbosity=None, debug_file=None, debug_filter=None):
+def get_logger(name=__name__, verbosity=None, debug_file=None, debug_filter=None) -> logging.Logger:
     """
     Colored logging
 

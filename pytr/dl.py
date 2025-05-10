@@ -4,15 +4,15 @@ from pathlib import Path
 from pathvalidate import sanitize_filepath
 from requests_futures.sessions import FuturesSession  # type: ignore[import-untyped]
 
-from pytr.api import TradeRepublicError
-from pytr.timeline import Timeline, UnsupportedEventError
-from pytr.utils import get_logger, preview
+from .api import TradeRepublicApi, TradeRepublicError
+from .timeline import Timeline, UnsupportedEventError
+from .utils import get_logger, preview
 
 
 class DL:
     def __init__(
         self,
-        tr,
+        tr: TradeRepublicApi,
         output_path,
         filename_fmt,
         since_timestamp=0,
@@ -48,9 +48,9 @@ class DL:
 
         self.docs_request = 0
         self.done = 0
-        self.filepaths = []
-        self.doc_urls = []
-        self.doc_urls_history = []
+        self.filepaths: list = []
+        self.doc_urls: list = []
+        self.doc_urls_history: list = []
         self.tl = Timeline(self.tr, self.since_timestamp)
         self.log = get_logger(__name__)
         self.load_history()
