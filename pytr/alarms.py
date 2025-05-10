@@ -7,7 +7,9 @@ from collections import defaultdict
 from decimal import Decimal, InvalidOperation
 from typing import Any
 
-from pytr.utils import get_logger, preview
+from .api import TradeRepublicApi
+from .utils import get_logger, preview
+from .typess import ISIN
 
 
 def alarms_dict_from_alarms_row(isin, alarms, max_values) -> dict[str, Any]:
@@ -20,13 +22,13 @@ def alarms_dict_from_alarms_row(isin, alarms, max_values) -> dict[str, Any]:
 
 
 class Alarms:
-    def __init__(self, tr, input=[], fp=None, remove_current_alarms=True):
+    def __init__(self, tr: TradeRepublicApi, input=[], fp=None, remove_current_alarms=True):
         self.tr = tr
         self.input = input
         self.fp = fp
         self.remove_current_alarms = remove_current_alarms
         self.log = get_logger(__name__)
-        self.data = {}
+        self.data: dict[ISIN, Any] = {}
 
     async def alarms_loop(self):
         recv = 0
@@ -44,9 +46,9 @@ class Alarms:
                 return
 
     async def set_alarms(self):
-        current_alarms = {}
-        new_alarms = {}
-        alarms_to_keep = {}
+        current_alarms: dict[ISIN, Any] = {}
+        new_alarms: dict[ISIN, Any] = {}
+        alarms_to_keep: dict[ISIN, Any] = {}
         isins = self.data.keys()
 
         if not isins:

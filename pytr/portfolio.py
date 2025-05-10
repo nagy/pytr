@@ -1,6 +1,6 @@
 import asyncio
 
-from pytr.utils import preview
+from .utils import preview
 
 
 class Portfolio:

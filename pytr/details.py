@@ -1,9 +1,13 @@
 import asyncio
 from datetime import datetime, timedelta
 
+from .api import TradeRepublicApi
+
+from .typess import ISIN
+
 
 class Details:
-    def __init__(self, tr, isin):
+    def __init__(self, tr: TradeRepublicApi, isin: ISIN):
         self.tr = tr
         self.isin = isin
 
