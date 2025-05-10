@@ -1,7 +1,7 @@
 import asyncio
 import re
 
-from pytr.utils import preview
+from .utils import preview
 
 bond_pattern = re.compile(
     r"(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December|Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\.?\s+20\d{2}",

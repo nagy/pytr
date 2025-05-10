@@ -3,7 +3,7 @@ import sys
 import time
 from getpass import getpass
 
-from pygments import formatters, highlight, lexers
+from pygments import formatters, highlight, lexers  # type: ignore[import-untyped]
 
 from pytr.api import CREDENTIALS_FILE, TradeRepublicApi
 from pytr.utils import get_logger
