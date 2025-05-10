@@ -419,7 +419,7 @@ def main():
         if args.output is not None:
             p.portfolio_to_csv(args.output)
     elif args.command == "events":
-        e = Events(
+        ev = Events(
             login(
                 phone_no=args.phone_no,
                 pin=args.pin,
@@ -429,7 +429,7 @@ def main():
             args.ticker,
             args.exchange,
         )
-        e.get()
+        ev.get()
     elif args.command == "export_transactions":
         events = [Event.from_dict(item) for item in json.load(args.input)]
         TransactionExporter(
