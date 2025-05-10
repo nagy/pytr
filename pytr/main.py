@@ -17,6 +17,7 @@ from pytr.details import Details
 from pytr.dl import DL
 from pytr.event import Event
 from pytr.portfolio import Portfolio
+from pytr.events import Events
 from pytr.transactions import SUPPORTED_LANGUAGES, TransactionExporter
 from pytr.utils import check_version, get_logger
 
@@ -191,6 +192,18 @@ def get_main_parser():
         description=info,
     )
     parser_portfolio.add_argument("-o", "--output", help="Output path of CSV file", type=Path)
+
+    # event
+    info = "Show events"
+    parser_events = parser_cmd.add_parser(
+        "events",
+        formatter_class=formatter,
+        parents=[parser_login_args],
+        help=info,
+        description=info,
+    )
+    parser_events.add_argument("ticker", help="the ticker name")
+    parser_events.add_argument("exchange", help="the ticker name", default="LSX")
 
     # details
     info = "Get details for an ISIN"
@@ -405,6 +418,18 @@ def main():
         p.get()
         if args.output is not None:
             p.portfolio_to_csv(args.output)
+    elif args.command == "events":
+        e = Events(
+            login(
+                phone_no=args.phone_no,
+                pin=args.pin,
+                web=not args.applogin,
+                store_credentials=args.store_credentials,
+            ),
+            args.ticker,
+            args.exchange,
+        )
+        e.get()
     elif args.command == "export_transactions":
         events = [Event.from_dict(item) for item in json.load(args.input)]
         TransactionExporter(
