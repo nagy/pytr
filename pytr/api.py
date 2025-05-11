@@ -477,7 +477,7 @@ class TradeRepublicApi:
     async def remove_watchlist(self, isin: ISIN):
         return await self.subscribe({"type": "removeFromWatchlist", "instrumentId": isin})
 
-    async def ticker2(self, isin: ISIN, exchange="LSX"):
+    async def ticker(self, isin: ISIN, exchange="LSX"):
         return await self.subscribe({"type": "ticker", "id": f"{isin}.{exchange}"})
 
     async def performance(self, isin, exchange="LSX"):
@@ -759,11 +759,11 @@ class TradeRepublicApi:
     async def price_alarm_overview(self):
         return await self.subscribe({"type": "priceAlarms"})
 
-    async def create_price_alarm(self, isin, price):
-        return await self.subscribe({"type": "createPriceAlarm", "instrumentId": isin, "targetPrice": price})
-
     async def cancel_price_alarm(self, price_alarm_id):
         return await self.subscribe({"type": "cancelPriceAlarm", "id": price_alarm_id})
+
+    async def create_price_alarm2(self, isin: ISIN, price):
+        return await self.subscribe2(type="createPriceAlarm", instrumentId=isin, targetPrice=price)
 
     async def news(self, isin):
         return await self.subscribe({"type": "neonNews", "isin": isin})
