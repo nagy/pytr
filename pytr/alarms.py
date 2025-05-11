@@ -90,7 +90,7 @@ class Alarms:
         action_count = 0
         for isin in isins:
             for a in new_alarms[isin]:
-                await self.tr.create_price_alarm(isin, float(a))
+                await self.tr.create_price_alarm2(isin, float(a))
                 action_count += 1
 
             for a in current_alarms[isin]:

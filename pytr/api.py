@@ -474,15 +474,13 @@ class TradeRepublicApi:
     def performance2(self, isin: ISIN, exchange="LSX"):
         return self.subscribe2(type="performance", id=f"{isin}.{exchange}")
 
-    async def performance_history(self, isin, timeframe, exchange="LSX", resolution=None):
-        parameters = {
-            "type": "aggregateHistory",
-            "id": f"{isin}.{exchange}",
-            "range": timeframe,
-        }
-        if resolution:
-            parameters["resolution"] = resolution
-        return await self.subscribe(parameters)
+    def performance_history2(self, isin: ISIN, timeframe, exchange="LSX", resolution=None):
+        return self.subscribe2(
+            type="aggregateHistory",
+            id=f"{isin}.{exchange}",
+            range=timeframe,
+            **{"resolution": resolution} if resolution else {},
+        )
 
     async def experience(self):
         return await self.subscribe({"type": "experience"})
@@ -747,8 +745,8 @@ class TradeRepublicApi:
     async def price_alarm_overview(self):
         return await self.subscribe({"type": "priceAlarms"})
 
-    async def create_price_alarm(self, isin, price):
-        return await self.subscribe({"type": "createPriceAlarm", "instrumentId": isin, "targetPrice": price})
+    def create_price_alarm2(self, isin: ISIN, price):
+        return self.subscribe2(type="createPriceAlarm", instrumentId=isin, targetPrice=price)
 
     async def cancel_price_alarm(self, price_alarm_id):
         return await self.subscribe({"type": "cancelPriceAlarm", "id": price_alarm_id})
