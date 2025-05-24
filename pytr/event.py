@@ -207,6 +207,7 @@ class Event:
         if event_type is PPEventType.DIVIDEND:
             isin = cls._parse_isin(event_dict)
             taxes = cls._parse_taxes(event_dict)
+            shares, _, _ = cls._parse_shares_fees_and_taxes(event_dict)
 
         elif isinstance(event_type, ConditionalEventType):
             isin = cls._parse_isin(event_dict)
@@ -239,6 +240,11 @@ class Event:
             action = section.get("action", None)
             if action and action.get("type", {}) == "instrumentDetail":
                 isin2 = section.get("action", {}).get("payload")
+                break
+            if section.get("type", {}) == "header":
+                isin2 = section.get("data", {}).get("icon")
+                isin2 = isin2[isin2.find("/") + 1 :]
+                isin2 = isin2[: isin2.find("/")]
                 break
         if isin != isin2:
             isin = isin2
@@ -316,6 +322,20 @@ class Event:
                         break
                     else:
                         continue
+
+        # The case for dividend payments on knock-outs
+        for shares_dict in filter(lambda x: x.get("title") in ["Aktien entfernt"], uebersicht_dict.get("data", [])):
+            dump_dict["subtitle"] = shares_dict["title"]
+            dump_dict["type"] = "shares"
+            pref_locale = (
+                "en"
+                if event_dict["eventType"] in ["benefits_saveback_execution", "benefits_spare_change_execution"]
+                else "de"
+            )
+            shares = cls._parse_float_from_text_value(
+                shares_dict.get("detail", {}).get("text", ""), dump_dict, pref_locale
+            )
+            break
 
         if shares_dict:
             dump_dict["subtitle"] = shares_dict["title"]
